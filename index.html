@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Isabella Rizzi — Full Stack Developer</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #050a0f;
+    color: #c8e6f5;
+    font-family: 'Rajdhani', sans-serif;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  .grid-bg {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image:
+      linear-gradient(rgba(0,200,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,200,255,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    z-index: 0;
+    animation: gridMove 20s linear infinite;
+  }
+
+  @keyframes gridMove {
+    0%   { background-position: 0 0; }
+    100% { background-position: 0 40px; }
+  }
+
+  .scanline {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(0,200,255,0.6), transparent);
+    z-index: 1;
+    animation: scan 4s linear infinite;
+  }
+
+  @keyframes scan {
+    0%   { top: -2px; opacity: 0; }
+    10%  { opacity: 1; }
+    90%  { opacity: 1; }
+    100% { top: 100vh; opacity: 0; }
+  }
+
+  .corner-tl, .corner-br {
+    position: fixed;
+    width: 60px;
+    height: 60px;
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  .corner-tl {
+    top: 16px; left: 16px;
+    border-top: 1px solid rgba(0,200,255,0.3);
+    border-left: 1px solid rgba(0,200,255,0.3);
+  }
+
+  .corner-br {
+    bottom: 16px; right: 16px;
+    border-bottom: 1px solid rgba(0,200,255,0.3);
+    border-right: 1px solid rgba(0,200,255,0.3);
+  }
+
+  .container {
+    position: relative;
+    z-index: 2;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* NAV */
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 60px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(0,200,255,0.2);
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .nav-logo {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    color: rgba(0,200,255,0.6);
+    letter-spacing: 2px;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .nav-links button {
+    background: none;
+    border: none;
+    color: rgba(200,230,245,0.5);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 14px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: color 0.3s;
+    padding: 4px 10px;
+  }
+
+  .nav-links button:hover,
+  .nav-links button.active {
+    color: #00c8ff;
+    text-shadow: 0 0 12px rgba(0,200,255,0.8);
+  }
+
+  /* SECTIONS */
+  .section { display: none; animation: fadeIn 0.5s ease; }
+  .section.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* SECTION HEADING */
+  .section-heading {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .section-heading h2 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 1px;
+  }
+
+  .section-heading-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(0,200,255,0.4), transparent);
+  }
+
+  .section-heading-num {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: rgba(0,200,255,0.4);
+    letter-spacing: 3px;
+  }
+
+  /* HERO */
+  .hero { display: flex; flex-direction: column; gap: 8px; margin-bottom: 48px; }
+
+  .hero-tag {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: rgba(0,200,255,0.6);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+  }
+
+  .hero-name {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(42px, 8vw, 72px);
+    font-weight: 900;
+    color: #ffffff;
+    line-height: 1;
+    letter-spacing: -1px;
+  }
+
+  .hero-name span {
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(0,200,255,0.7);
+  }
+
+  .hero-role {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 16px;
+    color: #00c8ff;
+    letter-spacing: 3px;
+    margin-top: 8px;
+  }
+
+  .hero-role::before { content: '> '; opacity: 0.5; }
+
+  .cursor {
+    display: inline-block;
+    width: 10px; height: 18px;
+    background: #00c8ff;
+    margin-left: 4px;
+    vertical-align: middle;
+    animation: blink 1s step-end infinite;
+  }
+
+  @keyframes blink { 50% { opacity: 0; } }
+
+  .hero-desc {
+    font-size: 17px;
+    color: rgba(200,230,245,0.65);
+    max-width: 520px;
+    line-height: 1.7;
+    font-weight: 300;
+    margin-top: 12px;
+  }
+
+  .hero-btns {
+    display: flex;
+    gap: 16px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    background: rgba(0,200,255,0.1);
+    border: 1px solid rgba(0,200,255,0.5);
+    color: #00c8ff;
+    padding: 12px 28px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s;
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
+  }
+
+  .btn-primary:hover {
+    background: rgba(0,200,255,0.2);
+    box-shadow: 0 0 20px rgba(0,200,255,0.3);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    border: 1px solid rgba(200,230,245,0.2);
+    color: rgba(200,230,245,0.6);
+    padding: 12px 28px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s;
+    clip-path: polygon(10px 0, 100% 0, 100% 100%, 0 100%, 0 10px);
+  }
+
+  .btn-secondary:hover {
+    border-color: rgba(200,230,245,0.5);
+    color: #c8e6f5;
+  }
+
+  /* STATUS BAR */
+  .status-bar {
+    display: flex;
+    gap: 24px;
+    padding: 16px 0;
+    border-top: 1px solid rgba(0,200,255,0.1);
+    border-bottom: 1px solid rgba(0,200,255,0.1);
+    margin-bottom: 48px;
+    flex-wrap: wrap;
+  }
+
+  .status-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: rgba(200,230,245,0.5);
+  }
+
+  .status-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #00ff88;
+    box-shadow: 0 0 8px rgba(0,255,136,0.8);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.3; }
+  }
+
+  /* ABOUT */
+  .about-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .about-card {
+    background: rgba(0,200,255,0.03);
+    border: 1px solid rgba(0,200,255,0.12);
+    padding: 24px;
+    position: relative;
+    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
+  }
+
+  .about-card::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 12px; height: 12px;
+    border-top: 1px solid #00c8ff;
+    border-right: 1px solid #00c8ff;
+  }
+
+  .about-card-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: rgba(0,200,255,0.5);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .about-card-value {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: #ffffff;
+  }
+
+  .about-card-sub {
+    font-size: 13px;
+    color: rgba(200,230,245,0.5);
+    margin-top: 4px;
+  }
+
+  .about-text {
+    font-size: 16px;
+    color: rgba(200,230,245,0.7);
+    line-height: 1.8;
+    font-weight: 300;
+    border-left: 2px solid rgba(0,200,255,0.3);
+    padding-left: 20px;
+  }
+
+  /* SKILLS */
+  .skills-section { margin-bottom: 20px; }
+
+  .skills-title {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: rgba(0,200,255,0.5);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .skill-item { margin-bottom: 14px; }
+
+  .skill-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    align-items: center;
+  }
+
+  .skill-name {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: #c8e6f5;
+    letter-spacing: 1px;
+  }
+
+  .skill-pct {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: #00c8ff;
+  }
+
+  .skill-bar-bg {
+    height: 4px;
+    background: rgba(255,255,255,0.05);
+    overflow: hidden;
+  }
+
+  .skill-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #00c8ff, #0066ff);
+    width: 0%;
+    transition: width 1.2s cubic-bezier(0.23, 1, 0.32, 1);
+    position: relative;
+  }
+
+  .skill-bar-fill::after {
+    content: '';
+    position: absolute;
+    right: 0; top: 0;
+    width: 6px; height: 100%;
+    background: #ffffff;
+    box-shadow: 0 0 8px rgba(0,200,255,1);
+  }
+
+  .tech-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 24px;
+  }
+
+  .tech-tag {
+    padding: 6px 16px;
+    border: 1px solid rgba(0,200,255,0.2);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: rgba(0,200,255,0.8);
+    letter-spacing: 1px;
+    background: rgba(0,200,255,0.04);
+    transition: all 0.3s;
+    cursor: default;
+  }
+
+  .tech-tag:hover {
+    border-color: rgba(0,200,255,0.6);
+    background: rgba(0,200,255,0.1);
+    box-shadow: 0 0 12px rgba(0,200,255,0.2);
+  }
+
+  /* CONTACT */
+  .contact-header { margin-bottom: 32px; }
+
+  .contact-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 8px;
+  }
+
+  .contact-sub {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    color: rgba(200,230,245,0.5);
+  }
+
+  .contact-links {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+
+  .contact-link {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 24px;
+    border: 1px solid rgba(0,200,255,0.12);
+    background: rgba(0,200,255,0.02);
+    cursor: pointer;
+    transition: all 0.3s;
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .contact-link:hover {
+    border-color: rgba(0,200,255,0.4);
+    background: rgba(0,200,255,0.06);
+    transform: translateX(4px);
+  }
+
+  .contact-link-icon {
+    width: 36px; height: 36px;
+    border: 1px solid rgba(0,200,255,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 14px;
+    color: #00c8ff;
+    flex-shrink: 0;
+  }
+
+  .contact-link-info { flex: 1; }
+
+  .contact-link-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: rgba(0,200,255,0.5);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+
+  .contact-link-value {
+    font-size: 15px;
+    color: #c8e6f5;
+    font-weight: 400;
+  }
+
+  .contact-link-arrow {
+    font-size: 18px;
+    color: rgba(0,200,255,0.4);
+    transition: all 0.3s;
+  }
+
+  .contact-link:hover .contact-link-arrow {
+    color: #00c8ff;
+    transform: translateX(4px);
+  }
+
+  /* GLITCH */
+  @keyframes glitch {
+    0%, 90%, 100% { transform: none; }
+    92% { transform: skew(-1deg) translateX(3px); }
+    94% { transform: skew(1deg) translateX(-3px); }
+    96% { transform: none; }
+  }
+
+  .glitch { animation: glitch 6s infinite; }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    .nav-logo { font-size: 11px; }
+    .nav-links button { font-size: 12px; padding: 4px 6px; }
+    .hero-name { font-size: 40px; }
+    .contact-title { font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+<div class="scanline"></div>
+<div class="corner-tl"></div>
+<div class="corner-br"></div>
+
+<div class="container">
+
+  <nav>
+    <div class="nav-logo">IR_PORTFOLIO.SYS</div>
+    <div class="nav-links">
+      <button class="active" onclick="showSection('home', this)">HOME</button>
+      <button onclick="showSection('sobre', this)">SOBRE</button>
+      <button onclick="showSection('skills', this)">SKILLS</button>
+      <button onclick="showSection('contato', this)">CONTATO</button>
+    </div>
+  </nav>
+
+  <!-- HOME -->
+  <div id="home" class="section active">
+    <div class="hero">
+      <div class="hero-tag">// FULL STACK DEVELOPER</div>
+      <div class="hero-name glitch">Isabella<br><span>Rizzi</span></div>
+      <div class="hero-role">BUILD. DEPLOY. SCALE<span class="cursor"></span></div>
+      <p class="hero-desc">Desenvolvedora Full Stack apaixonada por criar soluções robustas, desde o banco de dados até a interface. Transformo lógica em experiências digitais.</p>
+      <div class="hero-btns">
+        <button class="btn-primary" onclick="showSection('skills', document.querySelectorAll('.nav-links button')[2])">VER SKILLS →</button>
+        <button class="btn-secondary" onclick="showSection('contato', document.querySelectorAll('.nav-links button')[3])">CONTATO</button>
+      </div>
+    </div>
+
+    <div class="status-bar">
+      <div class="status-item"><div class="status-dot"></div>DISPONÍVEL PARA PROJETOS</div>
+      <div class="status-item">// LOCALIZAÇÃO: BRASIL</div>
+      <div class="status-item">// STACK: JAVA · SQL · HTML · CSS</div>
+    </div>
+  </div>
+
+  <!-- SOBRE -->
+  <div id="sobre" class="section">
+    <div class="section-heading">
+      <div class="section-heading-num">01</div>
+      <h2>SOBRE MIM</h2>
+      <div class="section-heading-line"></div>
+    </div>
+
+    <div class="about-grid">
+      <div class="about-card">
+        <div class="about-card-label">ESPECIALIDADE</div>
+        <div class="about-card-value">FULL</div>
+        <div class="about-card-sub">Stack Development</div>
+      </div>
+      <div class="about-card">
+        <div class="about-card-label">FOCO</div>
+        <div class="about-card-value">WEB</div>
+        <div class="about-card-sub">Back + Front End</div>
+      </div>
+      <div class="about-card">
+        <div class="about-card-label">LINGUAGEM PRINCIPAL</div>
+        <div class="about-card-value">JAVA</div>
+        <div class="about-card-sub">+ SQL & Web</div>
+      </div>
+      <div class="about-card">
+        <div class="about-card-label">STATUS</div>
+        <div class="about-card-value" style="color: #00ff88; font-size: 16px; margin-top: 4px;">● ONLINE</div>
+        <div class="about-card-sub">Disponível agora</div>
+      </div>
+    </div>
+
+    <p class="about-text">
+      Sou Isabella Rizzi, desenvolvedora Full Stack com foco em criar aplicações completas e eficientes.
+      Combino a robustez do Java no backend com SQL para modelagem de dados inteligente, e HTML/CSS para interfaces limpas e funcionais.
+      Acredito que um bom sistema precisa ser sólido por dentro e elegante por fora.
+    </p>
+  </div>
+
+  <!-- SKILLS -->
+  <div id="skills" class="section">
+    <div class="section-heading">
+      <div class="section-heading-num">02</div>
+      <h2>HABILIDADES</h2>
+      <div class="section-heading-line"></div>
+    </div>
+
+    <div class="skills-section">
+      <div class="skills-title">// LINGUAGENS & TECNOLOGIAS</div>
+
+      <div class="skill-item">
+        <div class="skill-header">
+          <span class="skill-name">JAVA</span>
+          <span class="skill-pct">88%</span>
+        </div>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="88%"></div></div>
+      </div>
+
+      <div class="skill-item">
+        <div class="skill-header">
+          <span class="skill-name">SQL</span>
+          <span class="skill-pct">82%</span>
+        </div>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="82%"></div></div>
+      </div>
+
+      <div class="skill-item">
+        <div class="skill-header">
+          <span class="skill-name">HTML5</span>
+          <span class="skill-pct">90%</span>
+        </div>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="90%"></div></div>
+      </div>
+
+      <div class="skill-item">
+        <div class="skill-header">
+          <span class="skill-name">CSS3</span>
+          <span class="skill-pct">85%</span>
+        </div>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="85%"></div></div>
+      </div>
+    </div>
+
+    <div class="tech-tags">
+      <div class="tech-tag">JAVA</div>
+      <div class="tech-tag">SPRING BOOT</div>
+      <div class="tech-tag">SQL</div>
+      <div class="tech-tag">MYSQL</div>
+      <div class="tech-tag">HTML5</div>
+      <div class="tech-tag">CSS3</div>
+      <div class="tech-tag">REST API</div>
+      <div class="tech-tag">GIT</div>
+      <div class="tech-tag">POO</div>
+      <div class="tech-tag">MVC</div>
+    </div>
+  </div>
+
+  <!-- CONTATO -->
+  <div id="contato" class="section">
+    <div class="section-heading">
+      <div class="section-heading-num">03</div>
+      <h2>CONTATO</h2>
+      <div class="section-heading-line"></div>
+    </div>
+
+    <div class="contact-header">
+      <div class="contact-title">Vamos construir algo?</div>
+      <div class="contact-sub">// ABERTA A OPORTUNIDADES & COLABORAÇÕES</div>
+    </div>
+
+    <div class="contact-links">
+      <!-- Troque pelo seu email real -->
+      <a class="contact-link" href="mailto:isa160648@gmail.com">
+        <div class="contact-link-icon">@</div>
+        <div class="contact-link-info">
+          <div class="contact-link-label">EMAIL</div>
+          <div class="contact-link-value">isa160648@gmail.com</div>
+        </div>
+        <div class="contact-link-arrow">→</div>
+      </a>
+
+      <!-- Troque pelo seu LinkedIn real -->
+      <a class="contact-link" href="https://linkedin.com/in/seu-usuario" target="_blank">
+        <div class="contact-link-icon">in</div>
+        <div class="contact-link-info">
+          <div class="contact-link-label">LINKEDIN</div>
+          <div class="contact-link-value">linkedin.com/in/seu-usuario</div>
+        </div>
+        <div class="contact-link-arrow">→</div>
+      </a>
+
+      <!-- Troque pelo seu GitHub real -->
+      <a class="contact-link" href="https://github.com/y.rizzi" target="_blank">
+        <div class="contact-link-icon">&lt;/&gt;</div>
+        <div class="contact-link-info">
+          <div class="contact-link-label">GITHUB</div>
+          <div class="contact-link-value">github.com/y.rizzi</div>
+        </div>
+        <div class="contact-link-arrow">→</div>
+      </a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function showSection(id, btn) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-links button').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    if (btn) btn.classList.add('active');
+
+    if (id === 'skills') {
+      setTimeout(() => {
+        document.querySelectorAll('.skill-bar-fill').forEach(bar => {
+          bar.style.width = bar.dataset.width;
+        });
+      }, 100);
+    }
+  }
+</script>
+</body>
+</html>
