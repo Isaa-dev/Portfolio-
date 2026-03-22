@@ -2,7 +2,7 @@
 
 Portfolio pessoal desenvolvido com HTML, CSS e JavaScript puro.
 
-🔗 **Acesse:** [isabellarizzi.github.io](https://isabellarizzi.github.io)
+🔗 **Acesse:** [isabellarizzi.github.io](file:///C:/Users/CCF/Downloads/index.html)
 
 ## 🛠️ Tecnologias utilizadas
 
