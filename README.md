@@ -1,16 +1,14 @@
 # 🖥️ Isabella Rizzi — Portfolio
 
-Portfolio pessoal desenvolvido com HTML, CSS e JavaScript puro.
+Portfolio pessoal desenvolvido com HTML, CSS e JavaScript.
 
-🔗 **Acesse:** (file:///C:/Users/CCF/Downloads/index.html)
-
-## 🛠️ Tecnologias utilizadas
+##  Tecnologias utilizadas
 
 - HTML5
 - CSS3 (animações, grid, clip-path)
 - JavaScript vanilla
 
-## ✨ Funcionalidades
+##  Funcionalidades
 
 - Design dark & futurista com animações
 - Navegação entre seções sem recarregar a página
@@ -18,7 +16,7 @@ Portfolio pessoal desenvolvido com HTML, CSS e JavaScript puro.
 - Layout responsivo para mobile
 - Efeito glitch, scanline e grid animado
 
-## 📁 Estrutura
+##  Estrutura
 ```
 repositorio/
 └── index.html
